@@ -1,0 +1,50 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: rox-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Rox#Estoque2026!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - rox_sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rox-api
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__Default: "Server=sqlserver,1433;Database=RoxEstoqueDb;User Id=sa;Password=Rox#Estoque2026!;TrustServerCertificate=True;MultipleActiveResultSets=true"
+      Jwt__SecretKey: "Docker_Rox_Estoque_Chave_Secreta_Para_Avaliacao_Do_Teste_2026"
+      Jwt__Issuer: "Rox.Api"
+      Jwt__Audience: "Rox.Client"
+      Jwt__ExpiracaoEmMinutos: "60"
+      Cors__AllowedOrigins__0: "http://localhost:8081"
+    ports:
+      - "5000:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: "http://localhost:5000/api"
+    container_name: rox-frontend
+    depends_on:
+      - api
+    ports:
+      - "8081:80"
+
+volumes:
+  rox_sqlserver_data:

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Rox.Api/Rox.Api.csproj" />
+    <Project Path="src/Rox.Application/Rox.Application.csproj" />
+    <Project Path="src/Rox.Domain/Rox.Domain.csproj" />
+    <Project Path="src/Rox.Infrastructure/Rox.Infrastructure.csproj" />
+  </Folder>
+</Solution>

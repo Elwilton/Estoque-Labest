@@ -1,0 +1,11 @@
+## Backend (.NET)
+backend/**/bin/
+backend/**/obj/
+*.user
+
+## Visual Studio
+.vs/
+
+## Frontend (Node)
+frontend/node_modules/
+frontend/dist/
