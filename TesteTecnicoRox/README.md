@@ -72,13 +72,44 @@ frontend/
 
 ### Opção 1 — Docker (recomendado)
 
+**Pré-requisitos:** [Docker](https://www.docker.com/products/docker-desktop/) e Docker Compose instalados (já incluídos no Docker Desktop).
+
+**1. Clone o repositório:**
+```bash
+git clone https://github.com/Elwilton/Estoque-Labest.git
+cd Estoque-Labest
+```
+
+**2. Suba toda a aplicação com um único comando:**
 ```bash
 docker compose up --build
 ```
 
-- Front-end: http://localhost:8081
-- API: http://localhost:5000 (Swagger em `/swagger`)
-- SQL Server sobe em um container isolado, sem afetar bancos existentes na máquina.
+Isso cria 3 containers isolados, sem afetar nada já instalado na sua máquina:
+
+| Serviço | Descrição | URL |
+|---|---|---|
+| `sqlserver` | Banco de dados SQL Server, com volume próprio | porta `1433` |
+| `api` | Back-end .NET, aplica as migrations automaticamente no startup | http://localhost:5000 (Swagger em `/swagger`) |
+| `frontend` | Front-end Vue buildado e servido via Nginx | http://localhost:8081 |
+
+Aguarde até o terminal mostrar que os 3 containers (`rox-sqlserver`, `rox-api`, `rox-frontend`) estão de pé — o SQL Server precisa ficar "healthy" antes da API iniciar, então a primeira subida pode levar 30-60 segundos.
+
+**3. Acesse a aplicação:**
+
+Abra [http://localhost:8081](http://localhost:8081) no navegador, clique em "Cadastre-se" e crie um usuário para começar a usar o sistema.
+
+**4. Para parar a aplicação:**
+```bash
+docker compose down
+```
+
+**5. Para parar e apagar também os dados do banco** (próxima subida começa do zero):
+```bash
+docker compose down -v
+```
+
+> Se as portas 5000, 8081 ou 1433 já estiverem em uso na sua máquina, edite o arquivo `docker-compose.yml` e ajuste o lado esquerdo do mapeamento de portas (ex: `"5050:8080"`).
 
 ### Opção 2 — Localmente
 
