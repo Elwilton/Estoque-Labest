@@ -262,6 +262,19 @@ th, td {
   font-size: 0.92rem;
 }
 
+th:last-child, td:last-child {
+  text-align: right;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.cell-truncate {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 th {
   color: var(--color-muted);
   font-weight: 600;
@@ -291,9 +304,10 @@ th {
   padding: 2rem 0;
 }
 
-.cell-with-action {
+.row-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.6rem;
 }
 

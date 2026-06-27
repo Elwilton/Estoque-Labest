@@ -2,16 +2,13 @@
 import { onMounted, ref } from 'vue'
 import { listarMovimentacoes, removerMovimentacao } from '../services/movimentacaoService'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
+import { formatarDataHora } from '../utils/data'
 
 const movimentacoes = ref([])
 const carregando = ref(true)
 const erro = ref('')
 const removendoId = ref(null)
 const movimentacaoParaRemover = ref(null)
-
-function formatarData(data) {
-  return new Date(data).toLocaleString('pt-BR')
-}
 
 function rotuloTipo(tipo) {
   return tipo === 1 ? 'Entrada' : 'Saída'
@@ -93,8 +90,13 @@ onMounted(carregar)
         </thead>
         <tbody>
           <tr v-for="movimentacao in movimentacoes" :key="movimentacao.id">
+            <td>{{ movimentacao.produtoNome }}</td>
+            <td><span :class="classeBadge(movimentacao.tipo)">{{ rotuloTipo(movimentacao.tipo) }}</span></td>
+            <td>{{ movimentacao.quantidade }}</td>
+            <td class="cell-truncate" :title="movimentacao.observacao || ''">{{ movimentacao.observacao || '—' }}</td>
+            <td>{{ formatarDataHora(movimentacao.criadoEm) }}</td>
             <td>
-              <div class="cell-with-action">
+              <div class="row-actions">
                 <RouterLink
                   :to="{ name: 'editar-movimentacao', params: { id: movimentacao.id } }"
                   class="icon-btn"
@@ -104,22 +106,15 @@ onMounted(carregar)
                     <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </RouterLink>
-                <span>{{ movimentacao.produtoNome }}</span>
+                <button
+                  class="btn btn-secondary"
+                  type="button"
+                  :disabled="removendoId === movimentacao.id"
+                  @click="solicitarRemocao(movimentacao)"
+                >
+                  {{ removendoId === movimentacao.id ? 'Removendo...' : 'Remover' }}
+                </button>
               </div>
-            </td>
-            <td><span :class="classeBadge(movimentacao.tipo)">{{ rotuloTipo(movimentacao.tipo) }}</span></td>
-            <td>{{ movimentacao.quantidade }}</td>
-            <td>{{ movimentacao.observacao || '—' }}</td>
-            <td>{{ formatarData(movimentacao.criadoEm) }}</td>
-            <td>
-              <button
-                class="btn btn-secondary"
-                type="button"
-                :disabled="removendoId === movimentacao.id"
-                @click="solicitarRemocao(movimentacao)"
-              >
-                {{ removendoId === movimentacao.id ? 'Removendo...' : 'Remover' }}
-              </button>
             </td>
           </tr>
         </tbody>

@@ -84,8 +84,12 @@ onMounted(carregar)
         </thead>
         <tbody>
           <tr v-for="produto in produtos" :key="produto.id">
+            <td>{{ produto.nome }}</td>
+            <td>{{ produto.descricao || '—' }}</td>
+            <td>{{ formatarMoeda(produto.preco) }}</td>
+            <td>{{ produto.quantidadeEmEstoque }}</td>
             <td>
-              <div class="cell-with-action">
+              <div class="row-actions">
                 <RouterLink
                   :to="{ name: 'editar-produto', params: { id: produto.id } }"
                   class="icon-btn"
@@ -95,21 +99,15 @@ onMounted(carregar)
                     <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </RouterLink>
-                <span>{{ produto.nome }}</span>
+                <button
+                  class="btn btn-secondary"
+                  type="button"
+                  :disabled="removendoId === produto.id"
+                  @click="solicitarRemocao(produto)"
+                >
+                  {{ removendoId === produto.id ? 'Removendo...' : 'Remover' }}
+                </button>
               </div>
-            </td>
-            <td>{{ produto.descricao || '—' }}</td>
-            <td>{{ formatarMoeda(produto.preco) }}</td>
-            <td>{{ produto.quantidadeEmEstoque }}</td>
-            <td>
-              <button
-                class="btn btn-secondary"
-                type="button"
-                :disabled="removendoId === produto.id"
-                @click="solicitarRemocao(produto)"
-              >
-                {{ removendoId === produto.id ? 'Removendo...' : 'Remover' }}
-              </button>
             </td>
           </tr>
         </tbody>
